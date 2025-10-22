@@ -1,25 +1,37 @@
 import { Swiper, SwiperSlide } from "swiper/react";
-// import styles from "./Banner.module.css";
+import { Navigation, Pagination, Autoplay, A11y, Keyboard, Mousewheel, Scrollbar } from "swiper/modules";
+import { bannerImages } from "../lib/bannerImages";
 
 export default function Banner() {
   return (
-    <Swiper spaceBetween={0} slidesPerView={1} autoplay={{ delay: 4000 }} loop>
-      <SwiperSlide>
-        <div className="flex h-[400px] items-center justify-center bg-[url('/images/banner1.jpg')] bg-cover bg-center text-3xl font-serif text-white">
-          Pioneering Human Immunology Research
-        </div>
-      </SwiperSlide>
-      <SwiperSlide>
-        <div className="flex h-[400px] items-center justify-center bg-[url('/images/banner2.jpg')] bg-cover bg-center text-3xl font-serif text-white">
-          Exploring Cutting-edge Therapies
-        </div>
-      </SwiperSlide>
+    <Swiper
+      modules={[Navigation, Pagination, Autoplay, A11y, Keyboard, Mousewheel, Scrollbar]}
+      spaceBetween={0}
+      slidesPerView={1}
+      autoplay={{ delay: 4000, disableOnInteraction: false }}
+      loop
+      navigation
+      pagination={{ clickable: true }}
+      keyboard={{ enabled: true }}
+      mousewheel={{ forceToAxis: true }}
+      scrollbar={{ draggable: true, hide: false }}
+      a11y={{ enabled: true }}
+    >
+      {bannerImages.map((b, idx) => (
+        <SwiperSlide key={idx}>
+          <div
+            className="relative flex h-[400px] items-center justify-center bg-cover bg-center text-3xl font-serif text-white"
+            style={{ backgroundImage: `url('${b.url}')` }}
+            aria-label={b.alt}
+            role="img"
+          >
+            <div className="absolute inset-0 bg-black/30" />
+            <div className="relative z-10 px-4 text-center drop-shadow-lg">
+              {b.caption}
+            </div>
+          </div>
+        </SwiperSlide>
+      ))}
     </Swiper>
-
-//<SwiperSlide>
-//  <div className={styles.banner-slide} style={{ backgroundImage: "url('/images/banner1.jpg')" }}>
-//    Pioneering Human Immunology Research
-//  </div>
-//</SwiperSlide>
   );
 }

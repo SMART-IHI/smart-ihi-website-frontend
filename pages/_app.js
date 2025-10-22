@@ -3,6 +3,7 @@ import "../styles/globals.css";
 import "swiper/css";            // Global CSS here
 import "swiper/css/navigation"; // optional if you use swiper navigation
 import "swiper/css/pagination"; // optional if you use pagination
+import "swiper/css/scrollbar";  // optional if you use scrollbar
 import { appWithTranslation } from "next-i18next";
 
 function MyApp({ Component, pageProps }) {
