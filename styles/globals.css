@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Theme tokens via CSS variables using Tailwind's rgb(var(--var) / <alpha>) pattern */
+:root {
+	--background: 248 250 252; /* slate-50 */
+	--foreground: 15 23 42;   /* slate-900 */
+	--primary: 79 70 229;      /* indigo-600 */
+	--accent: 14 165 233;      /* cyan-500 */
+	--muted: 71 85 105;        /* slate-600 */
+	--card: 255 255 255;       /* white */
+	--border: 226 232 240;     /* slate-200 */
+	--header: 255 255 255;     /* white header */
+	--mutedBg: 241 245 249;    /* slate-100 */
+}
+
+.dark {
+	--background: 2 6 23;      /* slate-950 */
+	--foreground: 226 232 240; /* slate-200 */
+	--primary: 99 102 241;     /* indigo-500 */
+	--accent: 34 211 238;      /* cyan-400 */
+	--muted: 148 163 184;      /* slate-400 */
+	--card: 15 23 42;          /* slate-900 */
+	--border: 51 65 85;        /* slate-700 */
+	--header: 15 23 42;        /* slate-900 */
+	--mutedBg: 3 7 18;         /* near slate-950 */
+}
+
+html,
+body,
+#__next {
+	height: 100%;
+}
+
+body {
+	@apply bg-background text-foreground font-sans antialiased;
+}
+
+/* Links */
+a {
+	@apply text-primary underline-offset-2 hover:underline;
+}
+
+/* Prose styling for rich text content */
+.prose {
+	@apply prose-slate dark:prose-invert;
+}
