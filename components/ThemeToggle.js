@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 function getSystemPrefersDark() {
   if (typeof window === "undefined") return false;
-  return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  return window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
 }
 
 function applyTheme(theme) {
