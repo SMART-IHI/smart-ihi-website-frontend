@@ -4,22 +4,38 @@ import ResearchCard from "../../components/ResearchCard";
 import { fetchStrapi } from "../../lib/api";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
-export default function Research({ fields }) {
+export default function Research({ fields = [], locale }) {
   return (
     <div>
       <Header />
-      <section className="max-w-6xl mx-auto p-10">
-  <h2 className="mb-6 font-serif text-3xl text-primary">Research Fields</h2>
-        <div className="grid md:grid-cols-3 gap-6">
-          {fields.map((field) => (
-            <ResearchCard
-              key={field.id}
-              title={field.attributes.title}
-              description={field.attributes.description}
-              slug={field.attributes.slug}
-            />
-          ))}
-        </div>
+      <section className="mx-auto max-w-6xl p-10">
+        <h2 className="mb-6 font-serif text-3xl text-primary">Research Fields</h2>
+        {(!Array.isArray(fields) || fields.length === 0) ? (
+          <p className="text-muted">No research fields found for locale: <strong>{locale}</strong>. Try switching language or publish localized content in Strapi.</p>
+        ) : (
+          <div className="grid gap-6 md:grid-cols-3">
+            {(fields || [])
+              .filter((f) => f && (f.attributes || f.title || f.slug))
+              .map((field) => {
+                const a = field.attributes || field; // Support Strapi v4 (attributes) and v5 (flat)
+                const rel = a.image?.data?.[0]?.attributes?.url
+                  || (Array.isArray(a.image) ? a.image[0]?.url : a.image?.url)
+                  || "";
+                const imageUrl = rel
+                  ? (rel.startsWith("http") ? rel : `${process.env.NEXT_PUBLIC_STRAPI_URL || ""}${rel}`)
+                  : undefined;
+                return (
+                  <ResearchCard
+                    key={field.id}
+                    title={a.title || "Untitled"}
+                    description={a.description || ""}
+                    slug={a.slug}
+                    imageUrl={imageUrl}
+                  />
+                );
+              })}
+          </div>
+        )}
       </section>
       <Footer />
     </div>
@@ -27,12 +43,25 @@ export default function Research({ fields }) {
 }
 
 export async function getStaticProps({ locale }) {
-  const fields = await fetchStrapi("research-fields", locale);
-  return {
-    props: {
-  fields,
-  ...(await serverSideTranslations(locale, ["common"])),
-    },
-    revalidate: 10,
-  };
+  try {
+    // Ignore locale: fetch all localizations so content always appears after publish
+    const fields = await fetchStrapi("research-fields", "all");
+    return {
+      props: {
+        fields,
+        locale,
+        ...(await serverSideTranslations(locale, ["common"]))
+      },
+      revalidate: 10,
+    };
+  } catch (e) {
+    return {
+      props: {
+        fields: [],
+        locale,
+        ...(await serverSideTranslations(locale, ["common"]))
+      },
+      revalidate: 10,
+    };
+  }
 }

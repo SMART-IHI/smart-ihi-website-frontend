@@ -37,7 +37,7 @@ export default function Header() {
             priority
           />
           <Image
-            src="/images/logo.jpg"
+            src="/images/logo.png"
             alt="Institute logo"
             width={480}
             height={120}

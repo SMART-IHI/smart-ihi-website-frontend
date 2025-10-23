@@ -1,6 +1,20 @@
-const { i18n } = require("./next-i18next.config");
+const { i18n: i18nextConfig } = require("./next-i18next.config");
+
+const { locales, defaultLocale } = i18nextConfig;
 
 module.exports = {
   reactStrictMode: true,
-  i18n,
+  // Only pass Next.js-supported i18n options
+  i18n: {
+    locales,
+    defaultLocale,
+    // Next 16 expects false if provided
+    localeDetection: false,
+  },
+  images: {
+    // Allow using quality 95 as used by Header images
+    qualities: [75, 95],
+  },
+  // Silence dev warning about cross-origin requests to /_next/* from 127.0.0.1
+  allowedDevOrigins: ["127.0.0.1", "localhost"],
 };

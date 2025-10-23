@@ -9,5 +9,9 @@
   "about": "关于我们",
   "welcome": "欢迎来到人类免疫学研究所",
   "pi_label": "课题负责人",
-  "team_members": "团队成员"
+  "team_members": "团队成员",
+  "related_fields": "相关研究方向"
+  ,
+  "pi_email": "PI 邮箱",
+  "joined_date": "加入日期"
 }

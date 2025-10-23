@@ -9,5 +9,9 @@
   "about": "About",
   "welcome": "Welcome to the Institute of Human Immunology",
   "pi_label": "Principal Investigator",
-  "team_members": "Team Members"
+  "team_members": "Team Members",
+  "related_fields": "Related Research Fields"
+  ,
+  "pi_email": "PI Email",
+  "joined_date": "Joined Date"
 }
