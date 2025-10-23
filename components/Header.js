@@ -5,7 +5,7 @@ import Image from "next/image";
 import ThemeToggle from "./ThemeToggle";
 
 export default function Header() {
-  const { t } = useTranslation();
+  const { t } = useTranslation("common");
   const router = useRouter();
   const { locale, asPath } = router;
 
@@ -52,6 +52,7 @@ export default function Header() {
           {[
             { href: "/", label: t("home") },
             { href: "/research", label: t("research") },
+            { href: "/team", label: t("team") },
             { href: "/news", label: t("news") },
             { href: "/education", label: t("education") },
             { href: "/resources", label: t("resources") },

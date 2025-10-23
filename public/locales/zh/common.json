@@ -1,10 +1,13 @@
 {
   "home": "首页",
   "research": "研究",
+  "team": "团队",
   "news": "新闻",
   "education": "教育",
   "resources": "资源",
   "jobs": "招聘",
   "about": "关于我们",
-  "welcome": "欢迎来到人类免疫学研究所"
+  "welcome": "欢迎来到人类免疫学研究所",
+  "pi_label": "课题负责人",
+  "team_members": "团队成员"
 }

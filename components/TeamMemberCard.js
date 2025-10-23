@@ -1,9 +1,13 @@
 export default function TeamMemberCard({ name, title, photo }) {
   return (
-    <div className="border rounded-lg p-4 text-center hover:shadow-lg transition">
-      <img src={photo || "/images/placeholder.png"} alt={name} className="mx-auto rounded-full w-24 h-24" />
-      <h4 className="mt-2 font-semibold">{name}</h4>
-      <p className="text-gray-600">{title}</p>
+    <div className="rounded-lg border border-border bg-card p-5 text-center shadow-card transition hover:shadow-md">
+      <img
+        src={photo || "/images/placeholder.png"}
+        alt={name}
+        className="mx-auto h-24 w-24 rounded-full object-cover"
+      />
+      <h4 className="mt-3 font-semibold text-foreground">{name}</h4>
+      {title && <p className="text-sm text-muted">{title}</p>}
     </div>
   );
 }

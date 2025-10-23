@@ -1,10 +1,13 @@
 {
   "home": "Home",
   "research": "Research",
+  "team": "Team",
   "news": "News",
   "education": "Education",
   "resources": "Resources",
   "jobs": "Jobs",
   "about": "About",
-  "welcome": "Welcome to the Institute of Human Immunology"
+  "welcome": "Welcome to the Institute of Human Immunology",
+  "pi_label": "Principal Investigator",
+  "team_members": "Team Members"
 }

@@ -19,6 +19,12 @@ export default function Home({ researchFields }) {
               title={field.attributes.title}
               description={field.attributes.description}
               slug={field.attributes.slug}
+              imageUrl={(field.attributes.image?.data?.[0]?.attributes?.url || "").startsWith("http")
+                ? field.attributes.image?.data?.[0]?.attributes?.url
+                : (field.attributes.image?.data?.[0]?.attributes?.url
+                  ? `${process.env.NEXT_PUBLIC_STRAPI_URL || ""}${field.attributes.image?.data?.[0]?.attributes?.url}`
+                  : undefined)
+              }
             />
           ))}
         </div>

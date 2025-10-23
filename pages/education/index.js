@@ -16,7 +16,6 @@ export default function Education({ programs }) {
 							key={p.id}
 							title={p.attributes.title}
 							description={p.attributes.description}
-							slug={p.attributes.slug}
 						/>
 					))}
 				</div>
@@ -27,13 +26,24 @@ export default function Education({ programs }) {
 }
 
 export async function getStaticProps({ locale }) {
-	const programs = await fetchStrapi("education-programs", locale);
-	return {
-		props: {
-			programs,
-			...(await serverSideTranslations(locale, ["common"])),
-		},
-		revalidate: 10,
-	};
+	try {
+		const programs = await fetchStrapi("educations", locale);
+		return {
+			props: {
+				programs,
+				...(await serverSideTranslations(locale, ["common"])),
+			},
+			revalidate: 10,
+		};
+	} catch (e) {
+		// Graceful fallback if permissions/token misconfigured; render empty list
+		return {
+			props: {
+				programs: [],
+				...(await serverSideTranslations(locale, ["common"])),
+			},
+			revalidate: 10,
+		};
+	}
 }
 

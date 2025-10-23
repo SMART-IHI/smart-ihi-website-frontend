@@ -11,12 +11,13 @@ export default function News({ fields }) {
       <section className="max-w-6xl mx-auto p-10">
   <h2 className="mb-6 font-serif text-3xl text-primary">News</h2>
         <div className="grid md:grid-cols-3 gap-6">
-          {fields.map((field) => (
+          {fields.map((item) => (
             <NewsCard
-              title={field.id}
-              summary={field.attributes.summary}
-              slug={field.attributes.slug}
-              date={field.attributes.date}
+              key={item.id}
+              title={item.attributes.title}
+              summary={item.attributes.summary}
+              slug={item.attributes.slug}
+              date={item.attributes.date}
             />
           ))}
         </div>

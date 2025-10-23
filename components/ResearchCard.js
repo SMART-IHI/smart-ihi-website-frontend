@@ -1,10 +1,22 @@
-export default function ResearchCard({ title, description, slug }) {
-  return (
-    <a href={`/research/${slug}`}>
-      <div className="rounded-lg border border-border bg-card p-5 shadow-card transition-transform hover:-translate-y-1 hover:shadow-md">
+import { excerpt } from "../lib/text";
+
+export default function ResearchCard({ title, description, slug, imageUrl }) {
+  const Card = (
+    <div className="overflow-hidden rounded-lg border border-border bg-card shadow-card transition-transform hover:-translate-y-1 hover:shadow-md">
+      {imageUrl && <img src={imageUrl} alt={title} className="h-40 w-full object-cover" />}
+      <div className="p-5">
         <h3 className="text-xl font-semibold">{title}</h3>
-        <p className="mt-2 text-muted">{description}</p>
+        {description && (
+          <p
+            className="mt-2 text-muted"
+            style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}
+          >
+            {excerpt(description, 160)}
+          </p>
+        )}
       </div>
-    </a>
+    </div>
   );
+
+  return slug ? <a href={`/research/${slug}`}>{Card}</a> : Card;
 }
