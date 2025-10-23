@@ -2,7 +2,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay, A11y, Keyboard, Mousewheel, Scrollbar } from "swiper/modules";
 import { bannerImages } from "../lib/bannerImages";
 
-export default function Banner() {
+export default function Banner({ items }) {
+  const slides = Array.isArray(items) && items.length > 0 ? items : bannerImages;
   return (
     <Swiper
       modules={[Navigation, Pagination, Autoplay, A11y, Keyboard, Mousewheel, Scrollbar]}
@@ -17,7 +18,7 @@ export default function Banner() {
       scrollbar={{ draggable: true, hide: false }}
       a11y={{ enabled: true }}
     >
-      {bannerImages.map((b, idx) => (
+      {slides.map((b, idx) => (
         <SwiperSlide key={idx}>
           <div
             className="relative flex h-[400px] items-center justify-center bg-cover bg-center text-3xl font-serif text-white"

@@ -5,11 +5,39 @@ import ResearchCard from "../components/ResearchCard";
 import { fetchStrapi } from "../lib/api";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
-export default function Home({ researchFields = [], locale }) {
+export default function Home({ researchFields = [], locale, home }) {
+  const ha = home?.attributes || home || {};
+  const headline = ha.headline || "";
+  const mission = ha.mission || "";
+  // Build banner items from home.banner_images if provided
+  const bi = ha.banner_images;
+  const rel = bi?.data?.attributes?.url || (Array.isArray(bi) ? bi[0]?.url : bi?.url) || "";
+  const bannerUrl = rel ? (rel.startsWith("http") ? rel : `${process.env.NEXT_PUBLIC_STRAPI_URL || ""}${rel}`) : undefined;
+  const bannerItems = bannerUrl ? [{ url: bannerUrl, alt: headline || "Hero", caption: headline || mission }] : undefined;
+  const missionBgUrl = bannerUrl || "/images/human_microbiome.webp";
   return (
     <div>
       <Header />
-      <Banner />
+      <Banner items={bannerItems} />
+      {(headline || mission) && (
+        <section className="mx-auto max-w-6xl p-10 pt-10">
+          {headline && (
+            <h1 className="mb-4 font-serif text-3xl text-primary md:text-4xl">
+              {headline}
+            </h1>
+          )}
+          {mission && (
+            <figure className="relative w-full overflow-hidden rounded-2xl border border-border bg-card shadow-card">
+              <div className="absolute left-0 top-0 h-full w-1.5 bg-gradient-to-b from-primary to-accent" />
+              <div className="relative p-6 md:p-8">
+                <p className="whitespace-pre-line text-2xl md:text-3xl leading-snug font-serif italic text-foreground/90">
+                  {mission}
+                </p>
+              </div>
+            </figure>
+          )}
+        </section>
+      )}
       <section className="mx-auto max-w-6xl p-10">
   <h2 className="mb-6 font-serif text-3xl text-primary">Our Research Fields</h2>
         {(!Array.isArray(researchFields) || researchFields.length === 0) ? (
@@ -50,10 +78,17 @@ export async function getStaticProps({ locale }) {
   try {
     // Ignore locale: fetch all localizations so content always appears after publish
     const researchFields = await fetchStrapi("research-fields", "all");
+    // Home single type from Strapi; pick current locale variant if available
+    const homes = await fetchStrapi("home", "all");
+    const targetLocale = (process.env.NEXT_PUBLIC_STRAPI_LOCALE_MAP?.[locale]) || locale;
+    const home = Array.isArray(homes)
+      ? (homes.find((h) => (h.attributes?.locale || h.locale) === targetLocale) || homes[0])
+      : homes;
     return {
       props: {
         researchFields,
         locale,
+        home: home || null,
         ...(await serverSideTranslations(locale, ["common"]))
       },
       revalidate: 10, // ISR
@@ -64,6 +99,7 @@ export async function getStaticProps({ locale }) {
       props: {
         researchFields: [],
         locale,
+        home: null,
         ...(await serverSideTranslations(locale, ["common"]))
       },
       revalidate: 10,
