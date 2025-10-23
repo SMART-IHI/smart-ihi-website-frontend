@@ -10,6 +10,7 @@ export default function TeamCard({
   href: hrefProp,
   fields = [],
   showDescription = true,
+  showPI = true,
 }) {
   // Allow passing a full team object for convenience
   const a = team ? (team.attributes || team) : null;
@@ -33,7 +34,7 @@ export default function TeamCard({
       <div className="p-5">
         <div className="flex items-start justify-between gap-3">
           <h3 className="text-xl font-semibold">{name}</h3>
-          {piName && <span className="shrink-0 text-xs text-muted">PI: {piName}</span>}
+          {showPI && piName && <span className="shrink-0 text-xs text-muted">PI: {piName}</span>}
         </div>
         {showDescription && summary && (
           <p

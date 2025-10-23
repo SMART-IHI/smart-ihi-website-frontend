@@ -24,7 +24,7 @@ export default function ResearchDetail({ field, teams }) {
           {(teams || []).map((team) => {
             const ta = team?.attributes || team || {};
             const href = ta.slug ? `/team/${ta.slug}` : undefined;
-            return <TeamCard key={team.id} team={team} href={href} showDescription={false} />;
+            return <TeamCard key={team.id} team={team} href={href} showDescription={false} showPI={false} />;
           })}
         </div>
       </section>

@@ -2,6 +2,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import TeamMemberCard from "../../components/TeamMemberCard";
 import { fetchStrapi } from "../../lib/api";
+import { renderMaybeMarkdown } from "../../lib/text";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 
@@ -31,6 +32,20 @@ export default function TeamDetail({ team, members, fields }) {
                   <a href={`mailto:${a.pi_email}`} className="text-primary hover:underline">{a.pi_email}</a>
                 </span>
               )}
+              {a.website && (
+                <span>
+                  {t("website", "Website")}：
+                  {(() => {
+                    const raw = String(a.website).trim();
+                    const url = /^(https?:)?\/\//i.test(raw) ? raw : `https://${raw}`;
+                    return (
+                      <a href={url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                        {raw}
+                      </a>
+                    );
+                  })()}
+                </span>
+              )}
               {a.joined_date && (
                 <span>
                   {t("joined_date", "Joined Date")}：
@@ -56,7 +71,7 @@ export default function TeamDetail({ team, members, fields }) {
         {a.description && (
           <div
             className="prose prose-neutral dark:prose-invert max-w-none"
-            dangerouslySetInnerHTML={{ __html: a.description }}
+            dangerouslySetInnerHTML={{ __html: renderMaybeMarkdown(a.description) }}
           />
         )}
 
