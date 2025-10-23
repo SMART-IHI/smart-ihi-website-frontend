@@ -2,6 +2,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import TeamCard from "../../components/TeamCard";
 import { fetchStrapi } from "../../lib/api";
+import { renderMaybeMarkdown } from "../../lib/text";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 export default function ResearchDetail({ field, teams }) {
@@ -16,7 +17,7 @@ export default function ResearchDetail({ field, teams }) {
         {description && (
           <div
             className="prose prose-neutral dark:prose-invert max-w-none mb-6"
-            dangerouslySetInnerHTML={{ __html: description }}
+            dangerouslySetInnerHTML={{ __html: renderMaybeMarkdown(description) }}
           />
         )}
         <h3 className="text-2xl mb-4">Teams in this field</h3>

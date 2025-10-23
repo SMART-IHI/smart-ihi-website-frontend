@@ -59,7 +59,6 @@ export default function Home({ researchFields = [], locale, home }) {
                   <ResearchCard
                     key={field.id}
                     title={a.title || "Untitled"}
-                    description={a.description || ""}
                     slug={a.slug}
                     imageUrl={imageUrl}
                   />

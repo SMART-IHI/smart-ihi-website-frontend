@@ -1,6 +1,7 @@
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import TeamMemberCard from "../../components/TeamMemberCard";
+import ResearchCard from "../../components/ResearchCard";
 import { fetchStrapi } from "../../lib/api";
 import { renderMaybeMarkdown } from "../../lib/text";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
@@ -77,24 +78,28 @@ export default function TeamDetail({ team, members, fields }) {
 
         {Array.isArray(fields) && fields.length > 0 && (
           <div className="mt-10">
-            <h2 className="mb-4 text-2xl">{t("related_fields", "Related Research Fields")}</h2>
-            <ul className="space-y-2">
+            <h2 className="mb-6 font-serif text-3xl text-primary">{t("related_fields", "Related Research Fields")}</h2>
+            <div className="grid gap-6 md:grid-cols-3">
               {fields.map((f) => {
                 const fa = f.attributes || f;
-                const slug = fa.slug;
+                const slug = fa?.slug;
+                // Resolve image across Strapi shapes
+                const rel = fa?.image?.data?.[0]?.attributes?.url
+                  || (Array.isArray(fa?.image) ? fa.image[0]?.url : fa?.image?.url)
+                  || "";
+                const imageUrl = rel
+                  ? (rel.startsWith("http") ? rel : `${process.env.NEXT_PUBLIC_STRAPI_URL || ""}${rel}`)
+                  : undefined;
                 return (
-                  <li key={f.id}>
-                    {slug ? (
-                      <a href={`/research/${slug}`} className="text-primary hover:underline">
-                        {fa.title}
-                      </a>
-                    ) : (
-                      <span>{fa.title}</span>
-                    )}
-                  </li>
+                  <ResearchCard
+                    key={f.id}
+                    title={fa?.title || "Untitled"}
+                    slug={slug}
+                    imageUrl={imageUrl}
+                  />
                 );
               })}
-            </ul>
+            </div>
           </div>
         )}
 
