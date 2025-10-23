@@ -13,7 +13,7 @@ export default function Research({ fields = [], locale }) {
         {(!Array.isArray(fields) || fields.length === 0) ? (
           <p className="text-muted">No research fields found for locale: <strong>{locale}</strong>. Try switching language or publish localized content in Strapi.</p>
         ) : (
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2">
             {(fields || [])
               .filter((f) => f && (f.attributes || f.title || f.slug))
               .map((field) => {
@@ -31,6 +31,8 @@ export default function Research({ fields = [], locale }) {
                     description={a.description || ""}
                     slug={a.slug}
                     imageUrl={imageUrl}
+                    descriptionLines={4}
+                    excerptLength={300}
                   />
                 );
               })}

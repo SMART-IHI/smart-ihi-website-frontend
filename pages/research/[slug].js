@@ -9,11 +9,23 @@ export default function ResearchDetail({ field, teams }) {
   const a = field?.attributes || field || {};
   const title = a?.title || "";
   const description = a?.description || "";
+  // Resolve hero image for this research field (supports Strapi v4/v5 shapes)
+  const rel = a.image?.data?.[0]?.attributes?.url
+    || (Array.isArray(a.image) ? a.image[0]?.url : a.image?.url)
+    || "";
+  const imageUrl = rel
+    ? (rel.startsWith("http") ? rel : `${process.env.NEXT_PUBLIC_STRAPI_URL || ""}${rel}`)
+    : undefined;
   return (
     <div>
       <Header />
       <section className="max-w-6xl mx-auto p-10">
         <h2 className="text-3xl font-serif mb-4">{title}</h2>
+        {imageUrl && (
+          <figure className="mb-6 overflow-hidden rounded-2xl border border-border bg-card shadow-card">
+            <img src={imageUrl} alt={title} className="h-64 w-full object-cover" />
+          </figure>
+        )}
         {description && (
           <div
             className="prose prose-neutral dark:prose-invert max-w-none mb-6"
