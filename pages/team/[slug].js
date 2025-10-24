@@ -147,10 +147,15 @@ export default function TeamDetail({ team, members, fields, publications = [], s
                       const d = new Date(src);
                       return isNaN(d) ? "" : String(d.getFullYear());
                     })();
-                    const rawUrl = pa.url || pa.link || pa.doi_url || pa.doi || (pa.pdf?.url) || (pa.file?.url) || "";
-                    const href = rawUrl
+                    const trimDoi = (pa.doi || "").toString().trim();
+                    const doiHref = trimDoi
+                      ? (/^https?:\/\//i.test(trimDoi) ? trimDoi : `https://doi.org/${trimDoi.replace(/^doi:\s*/i, "").trim()}`)
+                      : undefined;
+                    const rawUrl = pa.url || pa.link || pa.doi_url || (pa.pdf?.url) || (pa.file?.url) || "";
+                    const absUrl = rawUrl
                       ? (/^(https?:)?\/\//i.test(rawUrl) ? rawUrl : `${process.env.NEXT_PUBLIC_STRAPI_URL || ""}${rawUrl}`)
                       : undefined;
+                    const href = doiHref || absUrl;
                     const key = `pub-${p?.id || pa?.id || pa?.url || pa?.link || idx}`;
                     return (
                       <li key={key} className="rounded-md border border-border bg-card p-3">
@@ -163,9 +168,30 @@ export default function TeamDetail({ team, members, fields, publications = [], s
                             title
                           )}
                         </div>
-                        {(pa.authors || pa.journal || year) && (
+                        {pa.authors && (
                           <div className="mt-1 text-muted">
-                            {[pa.authors, pa.journal, year].filter(Boolean).join(" · ")}
+                            {String(pa.authors)}
+                          </div>
+                        )}
+                        {(pa.journal || year || pa.volume || pa.pages) && (
+                          <div className="mt-1 text-muted">
+                            {[
+                              pa.journal,
+                              year,
+                              [pa.volume, pa.pages].filter(Boolean).join(":") || null,
+                            ].filter(Boolean).join(" · ")}
+                          </div>
+                        )}
+                        {trimDoi && (
+                          <div className="mt-1">
+                            <a
+                              href={doiHref}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-primary hover:underline"
+                            >
+                              DOI: {trimDoi}
+                            </a>
                           </div>
                         )}
                       </li>
@@ -256,14 +282,21 @@ export async function getStaticProps({ params, locale }) {
       }
     }
     if (papers.length > 0) {
-      publications = papers.map((p, i) => ({
-        id: `local-${i}-${p?.link || p?.name || ""}`,
-        title: p?.name || p?.title || "Untitled",
-        url: p?.link || p?.url || "",
-        authors: p?.authors,
-        journal: p?.journal,
-        year: p?.year,
-      }));
+      publications = papers.map((p, i) => {
+        const doi = (p?.doi || "").toString().trim();
+        const url = p?.link || p?.url || (doi ? `https://doi.org/${doi.replace(/^doi:\s*/i, "").trim()}` : "");
+        return {
+          id: `local-${i}-${p?.link || p?.name || ""}`,
+          title: p?.name || p?.title || "Untitled",
+          url,
+          doi: doi || null,
+          authors: p?.authors,
+          journal: p?.journal,
+          year: p?.year,
+          volume: p?.volume || null,
+          pages: p?.pages || null,
+        };
+      });
     }
   } catch {}
 
@@ -314,9 +347,13 @@ export async function getStaticProps({ params, locale }) {
         const pa = (p && p.attributes) ? p.attributes : (p || {});
         const id = p?.id || pa?.id || `pub-${idx}`;
         const title = pa?.title || pa?.name || "Untitled";
-        const url = pa?.url || pa?.link || pa?.doi_url || pa?.doi || (pa?.pdf?.url) || (pa?.file?.url) || null;
+        const rawDoi = (pa?.doi || "").toString().trim();
+        const doi = rawDoi ? rawDoi : null;
+        const url = pa?.url || pa?.link || pa?.doi_url || (pa?.pdf?.url) || (pa?.file?.url) || (doi ? `https://doi.org/${rawDoi.replace(/^doi:\s*/i, "").trim()}` : null) || null;
         const authors = pa?.authors ?? null;
         const journal = pa?.journal ?? null;
+        const volume = pa?.volume ?? null;
+        const pages = pa?.pages ?? null;
         let year = null;
         const yr = pa?.year || pa?.publishedAt || pa?.date || pa?.createdAt;
         if (yr) {
@@ -331,8 +368,11 @@ export async function getStaticProps({ params, locale }) {
           id: String(id),
           title: String(title),
           url: url ? String(url) : null,
+          doi,
           authors,
           journal,
+          volume,
+          pages,
           year,
         };
       }),
