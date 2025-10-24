@@ -29,10 +29,10 @@ export default function Header() {
           <Image
             src="/images/smart.png"
             alt="SMART logo"
-            width={96}
-            height={96}
-            className="h-10 w-auto md:h-10 mr-5"
-            sizes="(min-width: 768px) 80px, 64px"
+            width={480}
+            height={120}
+            className="h-12 w-auto md:h-12 mr-2"
+            sizes="(min-width: 768px) 192px, 160px"
             quality={95}
             priority
           />
@@ -41,7 +41,7 @@ export default function Header() {
             alt="Institute logo"
             width={480}
             height={120}
-            className="h-10 w-auto md:h-12"
+            className="h-20 w-auto md:h-20 mr-2"
             sizes="(min-width: 768px) 192px, 160px"
             quality={95}
             priority
@@ -73,7 +73,7 @@ export default function Header() {
           ))}
         </nav>
         {/* Right: Actions (mobile: same row as nav, right-aligned; desktop: top-right) */}
-  <div className="col-start-3 row-start-1 flex items-center justify-end gap-2 justify-self-end md:row-start-1">
+  <div className="col-start-3 row-start-1 flex items-center justify-end gap-2 justify-self-end -mr-2 md:-mr-4 lg:-mr-6 md:row-start-1">
           <button onClick={toggleLanguage} className="rounded-md border border-border px-3 py-1 text-sm hover:bg-card">
             {locale === "en" ? "中文" : "EN"}
           </button>
