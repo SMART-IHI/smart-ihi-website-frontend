@@ -175,11 +175,22 @@ export default function TeamDetail({ team, members, fields, publications = [], s
                         )}
                         {(pa.journal || year || pa.volume || pa.pages) && (
                           <div className="mt-1 text-muted">
-                            {[
-                              pa.journal,
-                              year,
-                              [pa.volume, pa.pages].filter(Boolean).join(":") || null,
-                            ].filter(Boolean).join(" · ")}
+                            {/* Journal highlighted; year and volume:pages remain muted */}
+                            {pa.journal && (
+                              <span className="italic font-medium text-foreground">{String(pa.journal)}</span>
+                            )}
+                            {year && (
+                              <>
+                                {pa.journal ? <span> · </span> : null}
+                                <span>{year}</span>
+                              </>
+                            )}
+                            {([pa.volume, pa.pages].filter(Boolean).length > 0) && (
+                              <>
+                                {(pa.journal || year) ? <span> · </span> : null}
+                                <span>{[pa.volume, pa.pages].filter(Boolean).join(":")}</span>
+                              </>
+                            )}
                           </div>
                         )}
                         {trimDoi && (
