@@ -46,3 +46,27 @@ a {
 .prose {
 	@apply prose-slate dark:prose-invert;
 }
+
+/* Tighter spacing between section titles and following images/paragraphs (opt-in)
+   Use higher specificity and !important to override Tailwind utilities/typography defaults. */
+.prose.prose-tight h1,
+.prose.prose-tight h2,
+.prose.prose-tight h3 {
+	margin-bottom: 0 !important;
+}
+.prose.prose-tight h1 + p,
+.prose.prose-tight h2 + p,
+.prose.prose-tight h3 + p,
+.prose.prose-tight h1 + img,
+.prose.prose-tight h2 + img,
+.prose.prose-tight h3 + img,
+.prose.prose-tight h1 + figure,
+.prose.prose-tight h2 + figure,
+.prose.prose-tight h3 + figure {
+	margin-top: 0 !important;
+}
+.prose.prose-tight h1 + p img:first-child,
+.prose.prose-tight h2 + p img:first-child,
+.prose.prose-tight h3 + p img:first-child {
+	margin-top: 0 !important;
+}

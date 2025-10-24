@@ -38,12 +38,12 @@ export default function Home({ researchFields = [], locale, home }) {
           )}
         </section>
       )}
-      <section className="mx-auto max-w-6xl p-10">
+      <section className="mx-auto max-w-6xl p-10 pt-1">
   <h2 className="mb-6 font-serif text-3xl text-primary">Our Research Fields</h2>
         {(!Array.isArray(researchFields) || researchFields.length === 0) ? (
           <p className="text-muted">No research fields found for locale: <strong>{locale}</strong>. Try switching language or publish localized content in Strapi.</p>
         ) : (
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2">
             {(researchFields || [])
               .filter((f) => f && (f.attributes || f.title || f.slug))
               .map((field) => {
