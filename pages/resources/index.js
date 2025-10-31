@@ -2,6 +2,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { fetchStrapi } from "../../lib/api";
+import { normalizeAssetUrl } from "../../lib/text";
 
 export default function Resources({ resources }) {
   return (
@@ -11,7 +12,9 @@ export default function Resources({ resources }) {
         <h2 className="mb-6 font-serif text-3xl text-primary">Resources</h2>
         <div className="grid gap-4 md:grid-cols-2">
           {resources.map((r) => {
-            const imgUrl = r.attributes.image?.data?.[0]?.attributes?.url;
+            const rel = r.attributes.image?.data?.[0]?.attributes?.url || "";
+            const path = normalizeAssetUrl(rel);
+            const imgUrl = path ? (path.startsWith("http") ? path : path) : undefined;
             return (
               <a
                 key={r.id}

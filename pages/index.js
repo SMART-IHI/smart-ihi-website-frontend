@@ -3,6 +3,7 @@ import Banner from "../components/Banner";
 import Footer from "../components/Footer";
 import ResearchCard from "../components/ResearchCard";
 import { fetchStrapi } from "../lib/api";
+import { normalizeAssetUrl } from "../lib/text";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 export default function Home({ researchFields = [], locale, home }) {
@@ -12,7 +13,8 @@ export default function Home({ researchFields = [], locale, home }) {
   // Build banner items from home.banner_images if provided
   const bi = ha.banner_images;
   const rel = bi?.data?.attributes?.url || (Array.isArray(bi) ? bi[0]?.url : bi?.url) || "";
-  const bannerUrl = rel ? (rel.startsWith("http") ? rel : `${process.env.NEXT_PUBLIC_STRAPI_URL || ""}${rel}`) : undefined;
+  const bPath = normalizeAssetUrl(rel);
+  const bannerUrl = bPath ? (bPath.startsWith("http") ? bPath : bPath) : undefined;
   const bannerItems = bannerUrl ? [{ url: bannerUrl, alt: headline || "Hero", caption: headline || mission }] : undefined;
   const missionBgUrl = bannerUrl || "/images/human_microbiome.webp";
   return (
@@ -52,8 +54,9 @@ export default function Home({ researchFields = [], locale, home }) {
                 const rel = a.image?.data?.[0]?.attributes?.url
                   || (Array.isArray(a.image) ? a.image[0]?.url : a.image?.url)
                   || "";
-                const imageUrl = rel
-                  ? (rel.startsWith("http") ? rel : `${process.env.NEXT_PUBLIC_STRAPI_URL || ""}${rel}`)
+                const path = normalizeAssetUrl(rel);
+                const imageUrl = path
+                  ? (path.startsWith("http") ? path : path)
                   : undefined;
                 return (
                   <ResearchCard

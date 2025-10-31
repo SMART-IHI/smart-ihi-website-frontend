@@ -3,7 +3,7 @@ import Footer from "../../components/Footer";
 import TeamMemberCard from "../../components/TeamMemberCard";
 import ResearchCard from "../../components/ResearchCard";
 import { fetchStrapi } from "../../lib/api";
-import { renderMaybeMarkdown } from "../../lib/text";
+import { renderMaybeMarkdown, normalizeAssetUrl } from "../../lib/text";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import { useState } from "react";
@@ -14,7 +14,8 @@ export default function TeamDetail({ team, members, fields, publications = [], s
   const a = team.attributes || team; // v4 vs v5
   const photos = a?.photo?.data || a?.photo || [];
   const first = Array.isArray(photos) ? (photos[0]?.attributes?.url || photos[0]?.url) : photos?.url;
-  const cover = first ? (first.startsWith("http") ? first : `${process.env.NEXT_PUBLIC_STRAPI_URL || ""}${first}`) : undefined;
+  const firstPath = normalizeAssetUrl(first || "");
+  const cover = firstPath ? (firstPath.startsWith("http") ? firstPath : firstPath) : undefined;
 
   // Publications pagination state (client-side)
   const pageSize = 8;
@@ -98,8 +99,9 @@ export default function TeamDetail({ team, members, fields, publications = [], s
                     const rel = fa?.image?.data?.[0]?.attributes?.url
                       || (Array.isArray(fa?.image) ? fa.image[0]?.url : fa?.image?.url)
                       || "";
-                    const imageUrl = rel
-                      ? (rel.startsWith("http") ? rel : `${process.env.NEXT_PUBLIC_STRAPI_URL || ""}${rel}`)
+                    const path = normalizeAssetUrl(rel);
+                    const imageUrl = path
+                      ? (path.startsWith("http") ? path : path)
                       : undefined;
                     return (
                       <ResearchCard
@@ -122,7 +124,8 @@ export default function TeamDetail({ team, members, fields, publications = [], s
                     const ma = m.attributes || m;
                     const mPhotos = ma.photo?.data || ma.photo || [];
                     const mFirst = Array.isArray(mPhotos) ? (mPhotos[0]?.attributes?.url || mPhotos[0]?.url) : mPhotos?.url;
-                    const mPhoto = mFirst ? (mFirst.startsWith("http") ? mFirst : `${process.env.NEXT_PUBLIC_STRAPI_URL || ""}${mFirst}`) : undefined;
+                    const mPath = normalizeAssetUrl(mFirst || "");
+                    const mPhoto = mPath ? (mPath.startsWith("http") ? mPath : mPath) : undefined;
                     return (
                       <TeamMemberCard key={m.id} name={ma.name} title={ma.title} photo={mPhoto} />
                     );
@@ -152,8 +155,9 @@ export default function TeamDetail({ team, members, fields, publications = [], s
                       ? (/^https?:\/\//i.test(trimDoi) ? trimDoi : `https://doi.org/${trimDoi.replace(/^doi:\s*/i, "").trim()}`)
                       : undefined;
                     const rawUrl = pa.url || pa.link || pa.doi_url || (pa.pdf?.url) || (pa.file?.url) || "";
-                    const absUrl = rawUrl
-                      ? (/^(https?:)?\/\//i.test(rawUrl) ? rawUrl : `${process.env.NEXT_PUBLIC_STRAPI_URL || ""}${rawUrl}`)
+                    const norm = normalizeAssetUrl(rawUrl);
+                    const absUrl = norm
+                      ? (norm.startsWith("http") ? norm : norm)
                       : undefined;
                     const href = doiHref || absUrl;
                     const key = `pub-${p?.id || pa?.id || pa?.url || pa?.link || idx}`;
@@ -286,7 +290,7 @@ export async function getStaticProps({ params, locale }) {
       if (/^https?:\/\//i.test(s)) {
         seeMore = s;
       } else if (s.startsWith("/uploads")) {
-        seeMore = `${process.env.NEXT_PUBLIC_STRAPI_URL || ""}${s}`;
+        seeMore = s; // same-origin; Next rewrites proxy to Strapi
       } else {
         // Treat as internal route like /team/slug/publications
         seeMore = s;

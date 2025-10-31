@@ -3,6 +3,7 @@ import Footer from "../../components/Footer";
 import EducationCard from "../../components/EducationCard";
 import { fetchStrapi } from "../../lib/api";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { normalizeAssetUrl } from "../../lib/text";
 import { useTranslation } from "next-i18next";
 
 export default function Education({ programs = [] }) {
@@ -24,7 +25,8 @@ export default function Education({ programs = [] }) {
 								|| img?.data?.attributes?.url
 								|| (Array.isArray(img) ? img[0]?.url : img?.url)
 								|| "";
-							const imageUrl = rel ? (rel.startsWith("http") ? rel : `${process.env.NEXT_PUBLIC_STRAPI_URL || ""}${rel}`) : undefined;
+							const path = normalizeAssetUrl(rel);
+							const imageUrl = path ? (path.startsWith("http") ? path : path) : undefined;
 							return (
 								<EducationCard
 									key={p.id}

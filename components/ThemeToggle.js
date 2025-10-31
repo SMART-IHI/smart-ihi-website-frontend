@@ -1,10 +1,5 @@
 import { useEffect, useState } from "react";
 
-function getSystemPrefersDark() {
-  if (typeof window === "undefined") return false;
-  return window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
-}
-
 function applyTheme(theme) {
   if (typeof document === "undefined") return;
   const el = document.documentElement;
@@ -14,27 +9,32 @@ function applyTheme(theme) {
 
 export default function ThemeToggle() {
   const [mounted, setMounted] = useState(false);
-  const [theme, setTheme] = useState("system");
-  const [resolved, setResolved] = useState("light");
+  const [initialized, setInitialized] = useState(false);
+  // Only two states: 'light' or 'dark'. Default to light and ignore system/browser.
+  const [theme, setTheme] = useState("light");
 
   useEffect(() => {
-    setMounted(true);
-    // Initialize from localStorage or system
+    // Initialize from localStorage; fallback to light
     const saved = typeof window !== "undefined" ? localStorage.getItem("theme") : null;
-    const initial = saved || "light";
+    const initial = saved === "dark" ? "dark" : "light";
+    applyTheme(initial);
     setTheme(initial);
+    // Persist initial so SSR/hard reload stays consistent
+    if (typeof window !== "undefined") localStorage.setItem("theme", initial);
+    setInitialized(true);
+    setMounted(true);
   }, []);
 
   useEffect(() => {
-    const actual = theme === "system" ? (getSystemPrefersDark() ? "dark" : "light") : theme;
-    setResolved(actual);
-    applyTheme(actual);
+    // Apply and persist explicit user choice only after init
+    if (!initialized) return;
+    applyTheme(theme);
     if (typeof window !== "undefined") localStorage.setItem("theme", theme);
-  }, [theme]);
+  }, [theme, initialized]);
 
   if (!mounted) return null;
 
-  const nextTheme = resolved === "dark" ? "light" : "dark";
+  const nextTheme = theme === "dark" ? "light" : "dark";
 
   return (
     <button
@@ -43,7 +43,7 @@ export default function ThemeToggle() {
       onClick={() => setTheme(nextTheme)}
       title={`Switch to ${nextTheme} mode`}
     >
-      {resolved === "dark" ? "Light" : "Dark"}
+      {theme === "dark" ? "Light" : "Dark"}
     </button>
   );
 }

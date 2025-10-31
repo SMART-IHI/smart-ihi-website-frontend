@@ -3,6 +3,7 @@ import Footer from "../../components/Footer";
 import ResearchCard from "../../components/ResearchCard";
 import { fetchStrapi } from "../../lib/api";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { normalizeAssetUrl } from "../../lib/text";
 
 export default function Research({ fields = [], locale }) {
   return (
@@ -21,8 +22,9 @@ export default function Research({ fields = [], locale }) {
                 const rel = a.image?.data?.[0]?.attributes?.url
                   || (Array.isArray(a.image) ? a.image[0]?.url : a.image?.url)
                   || "";
-                const imageUrl = rel
-                  ? (rel.startsWith("http") ? rel : `${process.env.NEXT_PUBLIC_STRAPI_URL || ""}${rel}`)
+                const path = normalizeAssetUrl(rel);
+                const imageUrl = path
+                  ? (path.startsWith("http") ? path : path)
                   : undefined;
                 return (
                   <ResearchCard

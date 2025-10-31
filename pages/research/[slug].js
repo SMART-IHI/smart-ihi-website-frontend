@@ -2,7 +2,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import TeamCard from "../../components/TeamCard";
 import { fetchStrapi } from "../../lib/api";
-import { renderMaybeMarkdown } from "../../lib/text";
+import { renderMaybeMarkdown, normalizeAssetUrl } from "../../lib/text";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 
@@ -15,8 +15,9 @@ export default function ResearchDetail({ field, teams }) {
   const rel = a.image?.data?.[0]?.attributes?.url
     || (Array.isArray(a.image) ? a.image[0]?.url : a.image?.url)
     || "";
-  const imageUrl = rel
-    ? (rel.startsWith("http") ? rel : `${process.env.NEXT_PUBLIC_STRAPI_URL || ""}${rel}`)
+  const path = normalizeAssetUrl(rel);
+  const imageUrl = path
+    ? (path.startsWith("http") ? path : path)
     : undefined;
   return (
     <div>

@@ -2,6 +2,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { fetchStrapi } from "../../lib/api";
+import { renderMaybeMarkdown, normalizeAssetUrl } from "../../lib/text";
 
 export default function About({ about }) {
 	const a = about?.attributes || about || {};
@@ -21,7 +22,7 @@ export default function About({ about }) {
 				{a.content && (
 					<div
 						className="prose prose-neutral dark:prose-invert max-w-none"
-						dangerouslySetInnerHTML={{ __html: a.content }}
+						dangerouslySetInnerHTML={{ __html: renderMaybeMarkdown(a.content) }}
 					/>
 				)}
 				{images.length > 0 && (
@@ -29,7 +30,8 @@ export default function About({ about }) {
 						{images.map((img, i) => {
 							const u = img?.attributes?.url || img?.url;
 							if (!u) return null;
-							const src = u.startsWith("http") ? u : `${process.env.NEXT_PUBLIC_STRAPI_URL || ""}${u}`;
+							const path = normalizeAssetUrl(u);
+							const src = path ? (path.startsWith("http") ? path : path) : undefined;
 							return (
 								<img key={i} src={src} alt={img?.attributes?.alternativeText || "Address media"} className="h-28 w-full rounded object-cover" />
 							);

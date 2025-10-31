@@ -15,6 +15,21 @@ module.exports = {
     // Allow using quality 95 as used by Header images
     qualities: [75, 95],
   },
+  async rewrites() {
+    const targetBase = process.env.STRAPI_INTERNAL_URL || process.env.NEXT_PUBLIC_STRAPI_URL;
+    if (!targetBase) return [];
+    return [
+      // Proxy Strapi API and uploads through Next so clients on LAN don’t need direct access
+      {
+        source: "/api/:path*",
+        destination: `${targetBase.replace(/\/$/, "")}/api/:path*`,
+      },
+      {
+        source: "/uploads/:path*",
+        destination: `${targetBase.replace(/\/$/, "")}/uploads/:path*`,
+      },
+    ];
+  },
   // Silence dev warning about cross-origin requests to /_next/* from 127.0.0.1
-  allowedDevOrigins: ["127.0.0.1", "localhost"],
+  //allowedDevOrigins: ["127.0.0.1", "localhost"],
 };

@@ -1,6 +1,7 @@
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { fetchStrapi } from "../../lib/api";
+import { renderMaybeMarkdown } from "../../lib/text";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 export default function NewsDetail({ item }) {
@@ -12,9 +13,9 @@ export default function NewsDetail({ item }) {
 			<section className="mx-auto max-w-3xl p-10">
 				<h1 className="mb-2 text-3xl font-serif text-primary">{title}</h1>
 				<p className="mb-6 text-sm text-muted">{new Date(date).toLocaleDateString()}</p>
-				<article className="prose">
-					{/* content is richtext (HTML string) in Strapi */}
-					<div dangerouslySetInnerHTML={{ __html: content }} />
+				<article className="prose prose-neutral dark:prose-invert max-w-none">
+					{/* content is richtext (HTML/Markdown) in Strapi */}
+					<div dangerouslySetInnerHTML={{ __html: renderMaybeMarkdown(content) }} />
 				</article>
 			</section>
 			<Footer />

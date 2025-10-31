@@ -1,4 +1,4 @@
-import { excerpt } from "../lib/text";
+import { excerpt, normalizeAssetUrl } from "../lib/text";
 
 // TeamCard: Displays a team summary with image, name, PI, short description, and optional field chips
 export default function TeamCard({
@@ -22,7 +22,8 @@ export default function TeamCard({
     const rel = a.photo?.data?.[0]?.attributes?.url
       || (Array.isArray(a.photo) ? a.photo[0]?.url : a.photo?.url)
       || "";
-    imageUrl = rel ? (rel.startsWith("http") ? rel : `${process.env.NEXT_PUBLIC_STRAPI_URL || ""}${rel}`) : undefined;
+    const path = normalizeAssetUrl(rel);
+  imageUrl = path ? (path.startsWith("http") ? path : path) : undefined;
   }
   const href = hrefProp ?? (a?.slug ? `/team/${a.slug}` : undefined);
   const summary = description ? excerpt(description, 220) : "";
